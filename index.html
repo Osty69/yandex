@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Копия Яндекс Дзена</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        header h1 {
+            margin: 0;
+            text-align: center;
+            flex-grow: 1;
+        }
+        header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #1f1f1f;
+            padding: 10px 0;
+        }
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .article {
+            background: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transition: transform 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+        .article:hover {
+            transform: scale(1.05);
+        }
+        .article img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .article-content {
+            padding: 15px;
+            flex-grow: 1;
+        }
+        .article-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .article-description {
+            font-size: 16px;
+            color: #b0b0b0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .full-article {
+            padding: 20px;
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            margin: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        .full-article img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            margin-top: 20px;
+        }
+        .admin-page {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .admin-page input, .admin-page textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            background-color: #333;
+            color: #e0e0e0;
+            border-radius: 5px;
+        }
+        .admin-page button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .admin-page button:hover {
+            background-color: #155bb5;
+        }
+        .profile-page {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        .profile-page input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            background-color: #333;
+            color: #e0e0e0;
+            border-radius: 5px;
+        }
+        .profile-page img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Копия Яндекс Дзена</h1>
+        <img id="header-avatar" src="https://via.placeholder.com/50" alt="Профиль">
+    </header>
+    <nav>
+        <a href="#" onclick="navigateTo('main')">Главная</a>
+        <a href="#" onclick="navigateTo('admin')">Добавить статью</a>
+        <a href="#" onclick="navigateTo('profile')">Профиль</a>
+    </nav>
+    <main class="content" id="main-content"></main>
+
+    <main class="admin-page" id="admin-content" style="display:none;">
+        <h2>Добавить или редактировать статью</h2>
+        <input type="text" id="article-title" placeholder="Введите заголовок">
+        <textarea id="article-description" placeholder="Введите описание"></textarea>
+        <input type="text" id="article-image" placeholder="Вставьте URL изображения">
+        <button onclick="submitArticle()">Сохранить статью</button>
+    </main>
+
+    <main class="profile-page" id="profile-content" style="display:none;">
+        <h2>Профиль пользователя</h2>
+        <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Аватар">
+        <input type="file" id="avatar-input" accept="image/*" onchange="updateAvatar(event)">
+        <input type="text" id="profile-name" placeholder="Введите имя" value="">
+        <button onclick="saveProfile()">Сохранить профиль</button>
+    </main>
+
+    <main id="full-article-content" style="display:none;"></main>
+
+    <footer>
+        <span>&copy; 2024 Копия Яндекс Дзена. Все права защищены.</span>
+    </footer>
+
+    <script>
+        const content = document.getElementById('main-content');
+        const adminContent = document.getElementById('admin-content');
+        const profileContent = document.getElementById('profile-content');
+        const fullArticleContent = document.getElementById('full-article-content');
+        const headerAvatar = document.getElementById('header-avatar');
+
+        let articles = JSON.parse(localStorage.getItem('articles')) || [];
+        let currentEditingArticle = null;
+
+        function navigateTo(page) {
+            content.style.display = 'none';
+            adminContent.style.display = 'none';
+            profileContent.style.display = 'none';
+            fullArticleContent.style.display = 'none';
+
+            if (page === 'main') {
+                content.style.display = 'grid';
+                renderArticles();
+            } else if (page === 'admin') {
+                adminContent.style.display = 'block';
+                clearForm();
+            } else if (page === 'profile') {
+                profileContent.style.display = 'block';
+                loadProfile();
+            }
+        }
+
+        function renderArticles() {
+            content.innerHTML = '';
+            articles.forEach((article, index) => {
+                const articleElem = document.createElement('div');
+                articleElem.className = 'article';
+                articleElem.innerHTML = `
+                    <img src="${article.imageUrl || 'https://via.placeholder.com/300x200'}" alt="Изображение статьи">
+                    <div class="article-content">
+                        <h2 class="article-title">${article.title}</h2>
+                        <p class="article-description">${article.description}</p>
+                    </div>
+                    <button onclick="editArticle(${index})">Редактировать</button>
+                    <button onclick="deleteArticle(${index})">Удалить</button>
+                `;
+                articleElem.addEventListener('click', () => viewArticle(index));
+                content.appendChild(articleElem);
+            });
+        }
+
+        function viewArticle(index) {
+            const article = articles[index];
+            fullArticleContent.innerHTML = `
+                <div class="full-article">
+                    <img src="${article.imageUrl || 'https://via.placeholder.com/300x200'}" alt="Изображение статьи">
+                    <h2>${article.title}</h2>
+                    <p>${article.description}</p>
+                </div>
+            `;
+            fullArticleContent.style.display = 'block';
+        }
+
+        function deleteArticle(index) {
+            articles.splice(index, 1);
+            localStorage.setItem('articles', JSON.stringify(articles));
+            renderArticles();
+        }
+
+        function editArticle(index) {
+            currentEditingArticle = index;
+            const article = articles[index];
+            document.getElementById('article-title').value = article.title;
+            document.getElementById('article-description').value = article.description;
+            document.getElementById('article-image').value = article.imageUrl;
+            navigateTo('admin');
+        }
+
+        function submitArticle() {
+            const title = document.getElementById('article-title').value;
+            const description = document.getElementById('article-description').value;
+            const imageUrl = document.getElementById('article-image').value;
+
+            if (currentEditingArticle !== null) {
+                articles[currentEditingArticle] = { title, description, imageUrl };
+                currentEditingArticle = null;
+            } else {
+                articles.push({ title, description, imageUrl });
+            }
+
+            localStorage.setItem('articles', JSON.stringify(articles));
+            navigateTo('main');
+        }
+
+        function clearForm() {
+            document.getElementById('article-title').value = '';
+            document.getElementById('article-description').value = '';
+            document.getElementById('article-image').value = '';
+        }
+
+        function loadProfile() {
+            const name = localStorage.getItem('profileName') || '';
+            const avatar = localStorage.getItem('profileAvatar') || 'https://via.placeholder.com/150';
+
+            document.getElementById('profile-name').value = name;
+            document.getElementById('profile-avatar').src = avatar;
+            headerAvatar.src = avatar;
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('profile-name').value;
+            const avatar = document.getElementById('profile-avatar').src;
+
+            localStorage.setItem('profileName', name);
+            localStorage.setItem('profileAvatar', avatar);
+
+            alert('Профиль сохранён!');
+            headerAvatar.src = avatar;
+        }
+
+        function updateAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-avatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderArticles();
+            loadProfile();
+        });
+    </script>
+</body>
+</html>
